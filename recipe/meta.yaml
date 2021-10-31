@@ -1,5 +1,6 @@
 {% set name = "latte" %}
 {% set version = "1.2.2" %}
+{% set build = 3 %}
 
 package:
   name: {{ name|lower }}
@@ -9,16 +10,32 @@ source:
   url: https://github.com/lanl/LATTE/archive/refs/tags/v{{ version }}.tar.gz
   sha256: b54d62676a4a9355f5698823b86866640afd707137dfbdcfbf8832ffc75b9b35
 
+{% if mpi == "nompi" %}
+{% set build = build + 100 %}
+{% endif %}
 build:
-  number: 2
+  number: {{ build }}
   skip: True  # [win]
+
+  {% if mpi != "nompi" %}
+  {% set mpi_prefix = "mpi_" + mpi %}
+  {% else %}
+  {% set mpi_prefix = "nompi" %}
+  {% endif %}
+  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}
+
+  {% if mpi != "nompi" %}
+  run_exports:
+    - {{ name }} * {{ mpi_prefix }}_*
+  {% endif %}
 
 requirements:
   build:
     - {{ compiler('fortran') }}
-    - make 
+    - make
     - cmake
   host:
+    - {{ mpi }}  # [mpi != "nompi"]
     - libblas
     - liblapack
 

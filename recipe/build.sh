@@ -1,8 +1,14 @@
-#!/bin/bash 
-mkdir build 
+#!/bin/bash
+set -ex
+if [[ "${mpi}" != "nompi" ]]; then
+  export FC="$PREFIX/bin/mpifort"
+  MPI_OPT="-DDO_MPI=ON"
+else
+  MPI_OPT="-DDO_MPI=OFF"
+fi
+
+mkdir build
 cd build
-cmake ../cmake
-make
-mkdir ${PREFIX}/bin
-cp LATTE_DOUBLE ${PREFIX}/bin
-cp liblatte.a ${PREFIX}/lib
+cmake ../cmake ${CMAKE_ARGS} ${MPI_OPT}
+make -j${CPU_COUNT:-1}
+make install

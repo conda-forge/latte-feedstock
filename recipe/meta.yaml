@@ -1,6 +1,6 @@
 {% set name = "latte" %}
 {% set version = "1.2.2" %}
-{% set build = 3 %}
+{% set build = 4 %}
 
 package:
   name: {{ name|lower }}
@@ -32,6 +32,7 @@ build:
 requirements:
   build:
     - {{ compiler('fortran') }}
+    - {{ stdlib("c") }}
     - make
     - cmake
   host:

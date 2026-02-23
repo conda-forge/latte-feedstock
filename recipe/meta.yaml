@@ -1,6 +1,6 @@
 {% set name = "latte" %}
 {% set version = "1.2.2" %}
-{% set build = 4 %}
+{% set build = 5 %}
 
 package:
   name: {{ name|lower }}
